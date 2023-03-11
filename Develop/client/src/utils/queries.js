@@ -19,7 +19,14 @@ export const GET_ME = gql`
   }
 `;
 
-
-export const searchGoogleBooks = (query) => {
-  return fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`);
-};
+export const SEARCH_BOOKS = gql`
+  query searchBooks($searchTerm: String!) {
+    searchBooks(searchTerm: $searchTerm) {
+      bookId
+      authors
+      title
+      description
+      image
+    }
+  }
+`;
