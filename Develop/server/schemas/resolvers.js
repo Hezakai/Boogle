@@ -1,0 +1,1 @@
+const userResolver = require('./userResolver');
