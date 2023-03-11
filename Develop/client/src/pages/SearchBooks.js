@@ -11,7 +11,7 @@ import {
 } from 'react-bootstrap';
 
 import Auth from '../utils/auth';
-import { saveBook, searchGoogleBooks } from '../utils/API';
+import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 
 const SearchBooks = () => {
@@ -61,31 +61,30 @@ const SearchBooks = () => {
     }
   };
 
-  // create function to handle saving a book to our database
-  const handleSaveBook = async (bookId) => {
-    // find the book in `searchedBooks` state by the matching id
-    const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
+  const [saveBook, { error }] = useMutation(SAVE_BOOK);
 
-    // get token
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
+const handleSaveBook = async (bookId) => {
+  // find the book in `searchedBooks` state by the matching id
+  const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
 
-    if (!token) {
-      return false;
-    }
+  // get token
+  const token = Auth.loggedIn() ? Auth.getToken() : null;
 
-    try {
-      const response = await saveBook(bookToSave, token);
+  if (!token) {
+    return false;
+  }
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
+  try {
+    await saveBook({
+      variables: { input: bookToSave },
+    });
 
-      // if book successfully saves to user's account, save book id to state
-      setSavedBookIds([...savedBookIds, bookToSave.bookId]);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    // if book successfully saves to user's account, save book id to state
+    setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   return (
     <>
