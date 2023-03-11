@@ -43,3 +43,5 @@ const typeDefs = gql`
     link: String
   }
 `;
+
+module.exports = typeDefs;
